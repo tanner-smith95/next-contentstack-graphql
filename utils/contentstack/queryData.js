@@ -10,7 +10,7 @@ async function queryData(query) {
         headers: {
           "Content-Type": "application/json",
           access_token: deliveryToken,
-          branch: "main",
+          branch: process.env.CONTENTSTACK_BRANCH || "main",
         },
       }
     )

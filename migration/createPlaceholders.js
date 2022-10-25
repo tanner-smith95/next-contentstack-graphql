@@ -10,9 +10,12 @@ async function createPlaceholders() {
 
   const contentstackClient = contentstack.client();
 
+  const branch = process.env.CONTENTSTACK_BRANCH || "main";
+
   const stack = contentstackClient.stack({
     api_key: process.env.CONTENTSTACK_API_KEY,
     management_token: process.env.CONTENTSTACK_MANAGEMENT_TOKEN,
+    branch_uid: branch,
   });
 
   const entry = getPlaceholder(-1);
@@ -49,7 +52,7 @@ async function createPlaceholders() {
         "Content-Type": "application/json",
         api_key: process.env.CONTENTSTACK_API_KEY,
         authorization: process.env.CONTENTSTACK_MANAGEMENT_TOKEN,
-        branch: "main",
+        branch: branch,
       },
     };
 
