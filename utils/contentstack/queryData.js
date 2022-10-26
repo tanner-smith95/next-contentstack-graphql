@@ -34,7 +34,7 @@ async function queryData(queryArray) {
           // Check if pagnination needs to continue after the current page
           if (
             current?.params?.limit &&
-            current.params.limit - paginationCounter < 100
+            current.params.limit - paginationCounter <= 100
           ) {
             endPagination = true;
             params.limit = current.params.limit - paginationCounter;
