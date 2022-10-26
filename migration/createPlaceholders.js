@@ -8,7 +8,7 @@ dotenv.config();
 async function createPlaceholders() {
   const contentType = "placeholder_content";
   const numPlaceholders = 50000;
-  const startIndex = 5095;
+  const startIndex = 7240;
   const concurrentPromises = 10;
 
   let pause = false;
@@ -41,9 +41,8 @@ async function createPlaceholders() {
         let entryUid = null;
         let entryVersion = null;
         let entryTitle = null;
-
-        if (entry) {
-          try {
+        try {
+          if (entry) {
             await stack
               .contentType(contentType)
               .entry()
@@ -53,50 +52,51 @@ async function createPlaceholders() {
                 entryVersion = result?._version;
                 entryTitle = result?.title;
               });
-          } catch (error) {
-            console.log(`TEST Failed at entry ${i}`);
-
-            console.log(error?.errorMessage);
-            console.log(error?.errors);
           }
-        }
 
-        if (entryUid && entryVersion) {
-          let postData = JSON.stringify({
-            entry: {
-              environments: ["prod"],
-            },
-            version: entryVersion,
-          });
-
-          let options = {
-            hostname: "api.contentstack.io",
-            path: `/v3/content_types/${contentType}/entries/${entryUid}/publish`,
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              api_key: process.env.CONTENTSTACK_API_KEY,
-              authorization: process.env.CONTENTSTACK_MANAGEMENT_TOKEN,
-              branch: branch,
-            },
-          };
-
-          let req = https.request(options, (res) => {
-            res.on("data", (d) => {
-              process.stdout.write(d);
+          if (entryUid && entryVersion) {
+            let postData = JSON.stringify({
+              entry: {
+                environments: ["prod"],
+              },
+              version: entryVersion,
             });
 
-            console.log(`Entry Created: ${entryTitle} - UID: ${entryUid}`);
-            resolve(true);
-          });
+            let options = {
+              hostname: "api.contentstack.io",
+              path: `/v3/content_types/${contentType}/entries/${entryUid}/publish`,
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                api_key: process.env.CONTENTSTACK_API_KEY,
+                authorization: process.env.CONTENTSTACK_MANAGEMENT_TOKEN,
+                branch: branch,
+              },
+            };
 
-          req.on("error", (e) => {
-            console.error(e);
-            reject(error);
-          });
+            let req = https.request(options, (res) => {
+              res.on("data", (d) => {
+                process.stdout.write(d);
+              });
 
-          req.write(postData);
-          req.end();
+              console.log(`Entry Created: ${entryTitle} - UID: ${entryUid}`);
+              resolve(true);
+            });
+
+            req.on("error", (e) => {
+              console.error(e);
+              reject(e);
+            });
+
+            req.write(postData);
+            req.end();
+          }
+        } catch (error) {
+          console.log(`TEST Failed at entry ${i}`);
+
+          console.log(error?.errorMessage);
+          console.log(error?.errors);
+          reject(error);
         }
       })
     );

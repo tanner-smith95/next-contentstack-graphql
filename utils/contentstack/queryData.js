@@ -1,27 +1,84 @@
-const env = process.env.CONTENTSTACK_ENVIRONMENT;
-const apiKey = process.env.CONTENTSTACK_API_KEY;
-const deliveryToken = process.env.CONTENTSTACK_DELIVERY_TOKEN;
+async function queryData(queryArray) {
+  // Init query values
+  const env = process.env.CONTENTSTACK_ENVIRONMENT;
+  const apiKey = process.env.CONTENTSTACK_API_KEY;
+  const deliveryToken = process.env.CONTENTSTACK_DELIVERY_TOKEN;
 
-async function queryData(query) {
-  if (env && apiKey && deliveryToken) {
-    const response = await fetch(
-      `https://graphql.contentstack.com/stacks/${apiKey}?environment=${env}&query=query${query}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          access_token: deliveryToken,
-          branch: process.env.CONTENTSTACK_BRANCH || "main",
-        },
+  const collections = {};
+
+  if (queryArray?.length && env && apiKey && deliveryToken) {
+    // Loop through each query object in queryArray
+    for (let i = 0; i < queryArray.length; i += 1) {
+      const current = queryArray[i];
+      let endPagination = false;
+      let paginationCounter = 0;
+
+      let entries = [];
+
+      if (current?.type && current?.query) {
+        // While there are still entries to query, query pages 100 entries at a time
+        while (!endPagination) {
+          console.log(
+            "Query Page --------------------",
+            `Query Type: ${current?.type}`,
+            "--",
+            `Pagination Counter: ${paginationCounter}`
+          );
+
+          // Initialize the current page query parameters
+          let params = {
+            limit: 100,
+            skip: paginationCounter,
+          };
+
+          // Check if pagnination needs to continue after the current page
+          if (
+            current?.params?.limit &&
+            current.params.limit - paginationCounter < 100
+          ) {
+            endPagination = true;
+            params.limit = current.params.limit - paginationCounter;
+          }
+
+          // Fetch the current page of entries
+          const res = await fetch(
+            `https://graphql.contentstack.com/stacks/${apiKey}?environment=${env}&query=query{ ${current.type}(limit: ${params.limit}, skip: ${params.skip}) ${current?.query}}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                access_token: deliveryToken,
+                branch: process.env.CONTENTSTACK_BRANCH || "main",
+              },
+            }
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              // Update the counter and return the retrieved data if the fetch was successful
+              paginationCounter += 100;
+              return data?.data || null;
+            });
+
+          // If any entries were fetched for the current page, update the retrieved entries array
+          if (res?.[current.type]?.items?.length) {
+            entries = entries.concat(res[current.type].items);
+          } else {
+            // Otherwise, indicate all entries have been retrieved for the current query rule
+            endPagination = true;
+          }
+        }
+
+        // If any entries were retrieved successfully, update the payload object to contain the retrieved collection
+        if (entries?.length) {
+          collections[current.type] = {
+            items: entries,
+          };
+        }
       }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        return data;
-      });
-
-    return response;
+    }
   }
-  return null;
+
+  // Return the querried data
+  return collections;
 }
 
 export default queryData;
