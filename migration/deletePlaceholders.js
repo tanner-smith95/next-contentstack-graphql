@@ -1,14 +1,16 @@
 import contentstack from "@contentstack/management";
-import getPlaceholder from "./getPlaceholder.js";
 import https from "https";
 import dotenv from "dotenv";
+import { readFile } from "fs/promises";
 
 dotenv.config();
 
-async function createPlaceholders() {
+async function deletePlaceholders() {
   const contentType = "placeholder_content";
-  const numPlaceholders = 50000;
-  const startIndex = 0;
+
+  const entryUids = JSON.parse(
+    await readFile(new URL("../uids.json", import.meta.url))
+  );
 
   let pause = false;
 
@@ -24,7 +26,7 @@ async function createPlaceholders() {
     branch_uid: branch,
   });
 
-  for (let i = startIndex; i < numPlaceholders; i += 1) {
+  for (let i = 0; i < entryUids.length; i += 1) {
     if (pause) {
       console.log(
         "\n*****************************\nWaiting...\n*****************************\n"
@@ -35,36 +37,14 @@ async function createPlaceholders() {
 
     promises.push(
       new Promise(async (resolve, reject) => {
-        const entry = getPlaceholder(i);
+        let entryUid = entryUids[i];
 
-        let entryUid = null;
-        let entryVersion = null;
-        let entryTitle = null;
         try {
-          if (entry) {
-            await stack
-              .contentType(contentType)
-              .entry()
-              .create({ entry })
-              .then((result) => {
-                entryUid = result?.uid;
-                entryVersion = result?._version;
-                entryTitle = result?.title;
-              });
-          }
-
-          if (entryUid && entryVersion) {
-            let postData = JSON.stringify({
-              entry: {
-                environments: ["prod"],
-              },
-              version: entryVersion,
-            });
-
+          if (entryUid) {
             let options = {
               hostname: "api.contentstack.io",
-              path: `/v3/content_types/${contentType}/entries/${entryUid}/publish`,
-              method: "POST",
+              path: `/v3/content_types/${contentType}/entries/${entryUid}?delete_all_localized=true`,
+              method: "DELETE",
               headers: {
                 "Content-Type": "application/json",
                 api_key: process.env.CONTENTSTACK_API_KEY,
@@ -78,7 +58,7 @@ async function createPlaceholders() {
                 process.stdout.write(d);
               });
 
-              console.log(`Entry Created: ${entryTitle} - UID: ${entryUid}`);
+              console.log(`Entry Deleted: ${entryUid}`);
               resolve(true);
             });
 
@@ -87,7 +67,7 @@ async function createPlaceholders() {
               reject(e);
             });
 
-            req.write(postData);
+            req.write("");
             req.end();
           }
         } catch (error) {
@@ -100,7 +80,7 @@ async function createPlaceholders() {
       })
     );
 
-    if (promises.length >= 4) {
+    if (promises.length >= 5) {
       await Promise.all(promises);
 
       pause = true;
@@ -110,4 +90,4 @@ async function createPlaceholders() {
   }
 }
 
-createPlaceholders();
+deletePlaceholders();

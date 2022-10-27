@@ -2,6 +2,7 @@ function getPlaceholder(index) {
   return {
     environments: ["prod"],
     title: `Placeholder ${index}`,
+    url: `placeholder-${index}`,
     banner_image: "bltb4ce771395b74195",
     description: {
       type: "doc",
