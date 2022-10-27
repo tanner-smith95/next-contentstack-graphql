@@ -29,6 +29,7 @@ async function queryData(queryArray) {
           let params = {
             limit: 100,
             skip: paginationCounter,
+            where: current?.params?.where || null,
           };
 
           // Check if pagnination needs to continue after the current page
@@ -42,7 +43,11 @@ async function queryData(queryArray) {
 
           // Fetch the current page of entries
           const res = await fetch(
-            `https://graphql.contentstack.com/stacks/${apiKey}?environment=${env}&query=query{ ${current.type}(limit: ${params.limit}, skip: ${params.skip}) ${current?.query}}`,
+            `https://graphql.contentstack.com/stacks/${apiKey}?environment=${env}&query=query{ ${
+              current.type
+            }(limit: ${params.limit}, skip: ${params.skip}${
+              params?.where ? `, where: ${params.where}` : ""
+            }) ${current?.query}}`,
             {
               headers: {
                 "Content-Type": "application/json",
