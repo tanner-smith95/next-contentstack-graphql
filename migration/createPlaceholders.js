@@ -8,7 +8,7 @@ dotenv.config();
 async function createPlaceholders() {
   const contentType = "placeholder_content";
   const numPlaceholders = 50000;
-  const startIndex = 0;
+  const startIndex = 1207;
 
   let pause = false;
 
@@ -93,8 +93,7 @@ async function createPlaceholders() {
         } catch (error) {
           console.log(`TEST Failed at entry ${i}`);
 
-          console.log(error?.errorMessage);
-          console.log(error?.errors);
+          console.log(error);
           reject(error);
         }
       })
