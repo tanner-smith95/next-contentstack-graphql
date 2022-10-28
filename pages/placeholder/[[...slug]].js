@@ -3,6 +3,7 @@
 import queryData from "../../utils/contentstack/queryData";
 import { jsonToHtml } from "@contentstack/json-rte-serializer";
 import parse from "html-react-parser";
+import getPlaceholders from "../../collections/getPlaceholdes";
 
 export default function Page({ data }) {
   const pageData = data?.all_placeholder_content?.items?.[0];
@@ -49,17 +50,8 @@ export async function getStaticPaths() {
     `getStaticPaths[...slug] ------------------------------------------------------------------------`
   );
 
-  const queryArray = [
-    {
-      type: "all_placeholder_content",
-      params: {
-        limit: 0,
-      },
-      query: "{ items { url } }",
-    },
-  ];
+  const response = await getPlaceholders(false);
 
-  const response = await queryData(queryArray);
   const slugs = [];
 
   for (let i = 0; i < response.all_placeholder_content.items.length; i += 1) {
