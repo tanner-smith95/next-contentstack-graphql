@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { jsonToHtml } from "@contentstack/json-rte-serializer";
 import parse from "html-react-parser";
+import Link from "next/link";
 
 const PlaceholderTemplate = ({ pageData }) => {
   return pageData ? (
@@ -11,13 +12,15 @@ const PlaceholderTemplate = ({ pageData }) => {
       {pageData?.value_3 && <h2>Value 3: {pageData.value_3}</h2>}
       {pageData?.related_contentConnection?.edges?.[0]?.node?.url && (
         <h2>
-          <a
-            href={`placeholder-2/${pageData.related_contentConnection.edges[0].node.url}`}
+          <Link
+            href={`/placeholder-2/${pageData.related_contentConnection.edges[0].node.url}`}
           >
-            Related Content:{" "}
-            {pageData?.related_contentConnection?.edges?.[0]?.node?.title ||
-              pageData.related_contentConnection.edges[0].node.url}
-          </a>
+            <a>
+              Related Content:{" "}
+              {pageData?.related_contentConnection?.edges?.[0]?.node?.title ||
+                pageData.related_contentConnection.edges[0].node.url}
+            </a>
+          </Link>
         </h2>
       )}
       {pageData?.banner_imageConnection?.edges?.[0]?.node?.url && (
