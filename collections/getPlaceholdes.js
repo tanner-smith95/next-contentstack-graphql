@@ -11,6 +11,13 @@ const queryArray = [
     },
     query: "{ items { url } }",
   },
+  {
+    type: "all_placeholder_content_2",
+    params: {
+      limit: 0,
+    },
+    query: "{ items { url } }",
+  },
 ];
 
 async function fetchPlaceholders() {
