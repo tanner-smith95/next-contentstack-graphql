@@ -8,7 +8,7 @@ dotenv.config();
 async function createPlaceholders() {
   const contentType = "placeholder_content";
   const numPlaceholders = 50000;
-  const startIndex = 4230;
+  const startIndex = 8445;
 
   let pause = false;
 
@@ -26,10 +26,9 @@ async function createPlaceholders() {
 
   for (let i = startIndex; i < numPlaceholders; i += 1) {
     if (pause) {
-      console.log(
-        "\n*****************************\nWaiting...\n*****************************\n"
-      );
-      await new Promise((resolve) => setTimeout(resolve, 1100));
+      console.log("\n*****************************\nWaiting...\n");
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log("Finished Waiting...\n*****************************\n");
       pause = false;
     }
 
@@ -40,6 +39,8 @@ async function createPlaceholders() {
         let entryUid = null;
         let entryVersion = null;
         let entryTitle = null;
+
+        console.log(`Started creaating placeholder ${i}\n`);
         try {
           if (entry) {
             await stack
@@ -47,6 +48,7 @@ async function createPlaceholders() {
               .entry()
               .create({ entry })
               .then((result) => {
+                console.log(`Created placeholder ${i}\n`);
                 entryUid = result?.uid;
                 entryVersion = result?._version;
                 entryTitle = result?.title;
@@ -73,12 +75,15 @@ async function createPlaceholders() {
               },
             };
 
+            console.log(`Started publishing entry ${i}\n`);
             let req = https.request(options, (res) => {
               res.on("data", (d) => {
                 process.stdout.write(d);
               });
 
-              console.log(`Entry Created: ${entryTitle} - UID: ${entryUid}`);
+              console.log(
+                `Entry Published: ${entryTitle} - UID: ${entryUid}\n`
+              );
               resolve(true);
             });
 
