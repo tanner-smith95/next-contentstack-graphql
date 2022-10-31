@@ -7,9 +7,34 @@ const collectionQuery = "{ items { url system { uid locale } } }";
 
 const queryArray = [
   {
-    type: "all_placeholder_content",
+    type: "placeholderEnglish: all_placeholder_content",
     params: {
       limit: 0,
+      locale: "en-us",
+    },
+    query: collectionQuery,
+  },
+  {
+    type: "placeholderFrench: all_placeholder_content",
+    params: {
+      limit: 0,
+      locale: "fr",
+    },
+    query: collectionQuery,
+  },
+  {
+    type: "placeholderSpanish: all_placeholder_content",
+    params: {
+      limit: 0,
+      locale: "es",
+    },
+    query: collectionQuery,
+  },
+  {
+    type: "placeholderGerman: all_placeholder_content",
+    params: {
+      limit: 0,
+      locale: "de",
     },
     query: collectionQuery,
   },
