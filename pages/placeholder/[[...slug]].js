@@ -58,7 +58,7 @@ export async function getStaticProps(context) {
 
   const { params: { slug } = {} } = context ?? {};
 
-  slug.pop();
+  const locale = slug.pop();
 
   console.log("Page route:", slug.join("/"));
 
@@ -68,6 +68,7 @@ export async function getStaticProps(context) {
       params: {
         limit: 1,
         where: `{url: "${slug?.join("/")}"}`,
+        locale: locale,
       },
       query: `{
         ${modelFragments.placeholderContent}
