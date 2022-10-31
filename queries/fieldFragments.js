@@ -1,4 +1,4 @@
-const fragments = {
+const fieldFragments = {
   image: `
     edges {
       node {
@@ -18,4 +18,4 @@ const fragments = {
   `,
 };
 
-export default fragments;
+export default fieldFragments;

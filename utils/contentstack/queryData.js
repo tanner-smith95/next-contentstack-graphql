@@ -16,6 +16,8 @@ async function queryData(queryArray) {
       let entries = [];
 
       if (current?.type && current?.query) {
+        const parsedType = current?.type?.split(":")?.[0]?.replace(/ /g, "");
+
         // While there are still entries to query, query pages 100 entries at a time
         while (!endPagination) {
           console.log(
@@ -30,6 +32,7 @@ async function queryData(queryArray) {
             limit: 100,
             skip: paginationCounter,
             where: current?.params?.where || null,
+            locale: current?.params?.locale || null,
           };
 
           // Check if pagnination needs to continue after the current page
@@ -47,7 +50,9 @@ async function queryData(queryArray) {
               current.type
             }(limit: ${params.limit}, skip: ${params.skip}${
               params?.where ? `, where: ${params.where}` : ""
-            }) ${current?.query}}`,
+            }${params?.locale ? `, locale: "${params?.locale}"` : ""}) ${
+              current?.query
+            }}`,
             {
               headers: {
                 "Content-Type": "application/json",
@@ -64,8 +69,8 @@ async function queryData(queryArray) {
             });
 
           // If any entries were fetched for the current page, update the retrieved entries array
-          if (res?.[current.type]?.items?.length) {
-            entries = entries.concat(res[current.type].items);
+          if (res?.[parsedType]?.items?.length) {
+            entries = entries.concat(res[parsedType].items);
           } else {
             // Otherwise, indicate all entries have been retrieved for the current query rule
             endPagination = true;
@@ -74,7 +79,7 @@ async function queryData(queryArray) {
 
         // If any entries were retrieved successfully, update the payload object to contain the retrieved collection
         if (entries?.length) {
-          collections[current.type] = {
+          collections[parsedType] = {
             items: entries,
           };
         }

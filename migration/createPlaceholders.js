@@ -8,7 +8,7 @@ dotenv.config();
 async function createPlaceholders() {
   const contentType = "placeholder_content";
   const numPlaceholders = 50000;
-  const startIndex = 10285;
+  const startIndex = 10681;
 
   let pause = false;
 

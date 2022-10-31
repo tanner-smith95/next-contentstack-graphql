@@ -19,15 +19,28 @@ export default function Home({ data }) {
 export async function getStaticProps(context) {
   const queryArray = [
     {
-      type: "all_placeholder_content",
+      type: "englishPlaceholders: all_placeholder_content",
       params: {
-        limit: 0,
+        limit: 3,
+        locale: "en-us",
       },
-      query: "{ items { title system { uid } } }",
+      query: "{ items { title system { uid locale } } }",
     },
     {
-      type: "all_placeholder_content_2",
-      query: "{ items { title } }",
+      type: "Placeholder2English: all_placeholder_content_2",
+      params: {
+        limit: 0,
+        locale: "en-us",
+      },
+      query: "{ items { title system { uid locale } } }",
+    },
+    {
+      type: "Placeholder2French: all_placeholder_content_2",
+      params: {
+        limit: 0,
+        locale: "fr",
+      },
+      query: "{ items { title system { uid locale } } }",
     },
   ];
 

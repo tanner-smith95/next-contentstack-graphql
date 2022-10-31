@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 import queryData from "../../utils/contentstack/queryData";
 import getPlaceholders from "../../collections/getPlaceholdes";
-import fragments from "../../queries/fragments";
+import modelFragments from "../../queries/modelFragments";
 import PlaceholderTemplate from "../../components/templates/placeholderTemplate";
 
 export default function Page({ data }) {
@@ -54,22 +54,7 @@ export async function getStaticProps(context) {
         where: `{url: "${slug?.join("/")}"}`,
       },
       query: `{
-        items {
-          system {
-            content_type_uid
-          }
-          url
-          title
-          value_1
-          value_2
-          value_3
-          description {
-            ${fragments.richText}
-          }
-          banner_imageConnection {
-            ${fragments.image}
-          }
-        }
+        ${modelFragments?.placeholderContent2}
       }`,
     },
   ];
