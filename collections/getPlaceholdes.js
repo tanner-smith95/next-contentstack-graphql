@@ -9,14 +9,23 @@ const queryArray = [
     params: {
       limit: 0,
     },
-    query: "{ items { url } }",
+    query: "{ items { url system { uid locale } } }",
   },
   {
-    type: "all_placeholder_content_2",
+    type: "placeholder2English: all_placeholder_content_2",
     params: {
       limit: 0,
+      locale: "en-us",
     },
-    query: "{ items { url } }",
+    query: "{ items { url system { uid locale } } }",
+  },
+  {
+    type: "placeholder2French: all_placeholder_content_2",
+    params: {
+      limit: 0,
+      locale: "fr",
+    },
+    query: "{ items { url system { uid locale } } }",
   },
 ];
 

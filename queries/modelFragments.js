@@ -5,6 +5,7 @@ const modelFragments = {
   items {
     system {
       content_type_uid
+      locale
     }
     url
     title
@@ -42,6 +43,7 @@ const modelFragments = {
   items {
     system {
       content_type_uid
+      locale
     }
     url
     title

@@ -18,16 +18,30 @@ export async function getStaticPaths() {
     `getStaticPaths[...slug] ------------------------------------------------------------------------`
   );
 
-  const response = await getPlaceholders(false);
+  const response = await getPlaceholders(true);
 
   const slugs = [];
 
   // Build all alternate placeholder routes
-  for (let i = 0; i < response.all_placeholder_content_2.items.length; i += 1) {
-    const currentUrl = response?.all_placeholder_content_2?.items?.[i]?.url;
+  for (let i = 0; i < response.placeholder2English.items.length; i += 1) {
+    const currentUrl = response?.placeholder2English?.items?.[i]?.url;
+    const currentLocale = "en-us";
 
     if (currentUrl) {
-      slugs.push({ params: { slug: currentUrl.split("/") } });
+      slugs.push({
+        params: { slug: currentUrl.split("/").concat([currentLocale]) },
+      });
+    }
+  }
+
+  for (let i = 0; i < response.placeholder2French.items.length; i += 1) {
+    const currentUrl = response?.placeholder2French?.items?.[i]?.url;
+    const currentLocale = "fr";
+
+    if (currentUrl) {
+      slugs.push({
+        params: { slug: currentUrl.split("/").concat([currentLocale]) },
+      });
     }
   }
 
@@ -43,6 +57,8 @@ export async function getStaticProps(context) {
   );
 
   const { params: { slug } = {} } = context ?? {};
+
+  slug.pop();
 
   console.log("Page route:", slug.join("/"));
 
