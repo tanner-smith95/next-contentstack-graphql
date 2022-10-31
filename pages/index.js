@@ -11,7 +11,13 @@ export default function Home({ data }) {
         </pre>
       ))}
       <h2>Payload</h2>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
+      <pre>{JSON.stringify(data?.englishPlaceholders?.english, null, 2)}</pre>
+      <pre>{JSON.stringify(data?.frenchPlaceholders?.english, null, 2)}</pre>
+      <pre>{JSON.stringify(data?.spanishPlaceholders?.english, null, 2)}</pre>
+      <pre>{JSON.stringify(data?.germanPlaceholders?.english, null, 2)}</pre>
+      <pre>{JSON.stringify(data?.Placeholder2English?.english, null, 2)}</pre>
+      <pre>{JSON.stringify(data?.Placeholder2French?.english, null, 2)}</pre>
     </>
   );
 }
@@ -21,8 +27,32 @@ export async function getStaticProps(context) {
     {
       type: "englishPlaceholders: all_placeholder_content",
       params: {
-        limit: 3,
+        limit: 0,
         locale: "en-us",
+      },
+      query: "{ items { title system { uid locale } } }",
+    },
+    {
+      type: "frenchPlaceholders: all_placeholder_content",
+      params: {
+        limit: 0,
+        locale: "fr",
+      },
+      query: "{ items { title system { uid locale } } }",
+    },
+    {
+      type: "spanishPlaceholders: all_placeholder_content",
+      params: {
+        limit: 0,
+        locale: "es",
+      },
+      query: "{ items { title system { uid locale } } }",
+    },
+    {
+      type: "germanPlaceholders: all_placeholder_content",
+      params: {
+        limit: 0,
+        locale: "de",
       },
       query: "{ items { title system { uid locale } } }",
     },

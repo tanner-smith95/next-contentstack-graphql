@@ -18,15 +18,12 @@ export async function getStaticPaths() {
     `getStaticPaths[...slug] ------------------------------------------------------------------------`
   );
 
-  const response = await getPlaceholders(true);
+  const response = await getPlaceholders(false);
 
   const slugs = [];
 
   // Build all alternate placeholder routes
-  for (let i = 0; i < response.placeholder2English.items.length; i += 1) {
-    const currentUrl = response?.placeholder2English?.items?.[i]?.url;
-    const currentLocale = "en-us";
-
+  function getSlugs(currentUrl, currentLocale) {
     if (currentUrl) {
       slugs.push({
         params: { slug: currentUrl.split("/").concat([currentLocale]) },
@@ -34,15 +31,20 @@ export async function getStaticPaths() {
     }
   }
 
-  for (let i = 0; i < response.placeholder2French.items.length; i += 1) {
-    const currentUrl = response?.placeholder2French?.items?.[i]?.url;
-    const currentLocale = "fr";
+  for (let i = 0; i < response.placeholder2English.items.length; i += 1) {
+    getSlugs(response?.placeholder2English?.items?.[i]?.url, "en-us");
+  }
 
-    if (currentUrl) {
-      slugs.push({
-        params: { slug: currentUrl.split("/").concat([currentLocale]) },
-      });
-    }
+  for (let i = 0; i < response.placeholder2French.items.length; i += 1) {
+    getSlugs(response?.placeholder2French?.items?.[i]?.url, "fr");
+  }
+
+  for (let i = 0; i < response.placeholder2Spanish.items.length; i += 1) {
+    getSlugs(response?.placeholder2Spanish?.items?.[i]?.url, "es");
+  }
+
+  for (let i = 0; i < response.placeholder2German.items.length; i += 1) {
+    getSlugs(response?.placeholder2German?.items?.[i]?.url, "de");
   }
 
   return {

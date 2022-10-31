@@ -3,13 +3,15 @@
 import fs from "fs";
 import queryData from "../utils/contentstack/queryData";
 
+const collectionQuery = "{ items { url system { uid locale } } }";
+
 const queryArray = [
   {
     type: "all_placeholder_content",
     params: {
       limit: 0,
     },
-    query: "{ items { url system { uid locale } } }",
+    query: collectionQuery,
   },
   {
     type: "placeholder2English: all_placeholder_content_2",
@@ -17,7 +19,7 @@ const queryArray = [
       limit: 0,
       locale: "en-us",
     },
-    query: "{ items { url system { uid locale } } }",
+    query: collectionQuery,
   },
   {
     type: "placeholder2French: all_placeholder_content_2",
@@ -25,7 +27,23 @@ const queryArray = [
       limit: 0,
       locale: "fr",
     },
-    query: "{ items { url system { uid locale } } }",
+    query: collectionQuery,
+  },
+  {
+    type: "placeholder2Spanish: all_placeholder_content_2",
+    params: {
+      limit: 0,
+      locale: "fr",
+    },
+    query: collectionQuery,
+  },
+  {
+    type: "placeholder2German: all_placeholder_content_2",
+    params: {
+      limit: 0,
+      locale: "fr",
+    },
+    query: collectionQuery,
   },
 ];
 
