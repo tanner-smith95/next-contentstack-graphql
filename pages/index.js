@@ -1,11 +1,14 @@
 import queryData from "../utils/contentstack/queryData";
-import { InstantSearch, SearchBox, Hits } from "react-instantsearch-hooks-web";
+import {
+  InstantSearch,
+  SearchBox,
+  Hits,
+  Highlight,
+} from "react-instantsearch-hooks-web";
 import algoliasearch from "algoliasearch";
 
 export default function Home({ data }) {
   // Algolia Search
-
-  // hello_algolia.js
 
   // Connect and authenticate with your Algolia app
   const client = algoliasearch(
@@ -13,20 +16,30 @@ export default function Home({ data }) {
     "b3f926665b7c661823175ee0440e6f6f"
   );
 
-  // Create a new index and add a record
-  // const index = client.initIndex("test_index");
-
-  // Search the index and print the results
-  // index.search("test_record").then(({ hits }) => console.log(hits[0]));
-
   const HitComponent = ({ hit }) => {
     return hit ? (
       <div>
         <hr />
-        {hit?.title && <h2>{hit.title}</h2>}
-        {hit?.value_1 && <div>{hit.value_1}</div>}
-        {hit?.value_2 && <div>{hit.value_2}</div>}
-        {hit?.value_3 && <div>{hit.value_3}</div>}
+        {hit?.title && (
+          <h2>
+            <Highlight attribute="title" hit={hit} />
+          </h2>
+        )}
+        {hit?.value_1 && (
+          <div>
+            <Highlight attribute="value_1" hit={hit} />
+          </div>
+        )}
+        {hit?.value_2 && (
+          <div>
+            <Highlight attribute="value_2" hit={hit} />
+          </div>
+        )}
+        {hit?.value_3 && (
+          <div>
+            <Highlight attribute="value_3" hit={hit} />
+          </div>
+        )}
       </div>
     ) : null;
   };
