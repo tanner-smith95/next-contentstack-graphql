@@ -4,6 +4,8 @@ import {
   SearchBox,
   Hits,
   Highlight,
+  Pagination,
+  HitsPerPage,
 } from "react-instantsearch-hooks-web";
 import algoliasearch from "algoliasearch";
 
@@ -60,8 +62,18 @@ export default function Home({ data }) {
       <pre>{JSON.stringify(data?.germanPlaceholders?.english, null, 2)}</pre>
       <pre>{JSON.stringify(data?.Placeholder2English?.english, null, 2)}</pre>
       <pre>{JSON.stringify(data?.Placeholder2French?.english, null, 2)}</pre>
+
       <InstantSearch indexName="test_index" searchClient={client}>
         <SearchBox />
+
+        <HitsPerPage
+          items={[
+            { label: "8 hits per page", value: 8, default: true },
+            { label: "16 hits per page", value: 16 },
+          ]}
+        />
+
+        <Pagination />
 
         <Hits hitComponent={({ hit }) => <HitComponent hit={hit} />} />
       </InstantSearch>
