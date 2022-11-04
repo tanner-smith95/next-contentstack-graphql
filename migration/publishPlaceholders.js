@@ -12,7 +12,7 @@ async function publishPlaceholders() {
     await readFile(new URL("../uids.json", import.meta.url))
   );
 
-  const startIndex = 430;
+  const startIndex = 0;
 
   let pause = false;
 

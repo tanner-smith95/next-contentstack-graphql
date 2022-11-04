@@ -1,6 +1,35 @@
 import queryData from "../utils/contentstack/queryData";
+import { InstantSearch, SearchBox, Hits } from "react-instantsearch-hooks-web";
+import algoliasearch from "algoliasearch";
 
 export default function Home({ data }) {
+  // Algolia Search
+
+  // hello_algolia.js
+
+  // Connect and authenticate with your Algolia app
+  const client = algoliasearch(
+    "68W8EJJMF6",
+    "b3f926665b7c661823175ee0440e6f6f"
+  );
+
+  // Create a new index and add a record
+  // const index = client.initIndex("test_index");
+
+  // Search the index and print the results
+  // index.search("test_record").then(({ hits }) => console.log(hits[0]));
+
+  const HitComponent = ({ hit }) => {
+    return hit ? (
+      <div>
+        <hr />
+        {hit?.title && <h2>{hit.title}</h2>}
+        {hit?.value_1 && <div>{hit.value_1}</div>}
+        {hit?.value_2 && <div>{hit.value_2}</div>}
+        {hit?.value_3 && <div>{hit.value_3}</div>}
+      </div>
+    ) : null;
+  };
   return (
     <>
       <h1>Contentstack GraphQL POC</h1>
@@ -18,6 +47,11 @@ export default function Home({ data }) {
       <pre>{JSON.stringify(data?.germanPlaceholders?.english, null, 2)}</pre>
       <pre>{JSON.stringify(data?.Placeholder2English?.english, null, 2)}</pre>
       <pre>{JSON.stringify(data?.Placeholder2French?.english, null, 2)}</pre>
+      <InstantSearch indexName="test_index" searchClient={client}>
+        <SearchBox />
+
+        <Hits hitComponent={({ hit }) => <HitComponent hit={hit} />} />
+      </InstantSearch>
     </>
   );
 }
@@ -27,7 +61,7 @@ export async function getStaticProps(context) {
     {
       type: "englishPlaceholders: all_placeholder_content",
       params: {
-        limit: 0,
+        limit: 5,
         locale: "en-us",
       },
       query: "{ items { title system { uid locale } } }",
@@ -35,7 +69,7 @@ export async function getStaticProps(context) {
     {
       type: "frenchPlaceholders: all_placeholder_content",
       params: {
-        limit: 0,
+        limit: 5,
         locale: "fr",
       },
       query: "{ items { title system { uid locale } } }",
@@ -43,7 +77,7 @@ export async function getStaticProps(context) {
     {
       type: "spanishPlaceholders: all_placeholder_content",
       params: {
-        limit: 0,
+        limit: 5,
         locale: "es",
       },
       query: "{ items { title system { uid locale } } }",
@@ -51,7 +85,7 @@ export async function getStaticProps(context) {
     {
       type: "germanPlaceholders: all_placeholder_content",
       params: {
-        limit: 0,
+        limit: 5,
         locale: "de",
       },
       query: "{ items { title system { uid locale } } }",
@@ -59,7 +93,7 @@ export async function getStaticProps(context) {
     {
       type: "Placeholder2English: all_placeholder_content_2",
       params: {
-        limit: 0,
+        limit: 5,
         locale: "en-us",
       },
       query: "{ items { title system { uid locale } } }",
@@ -67,7 +101,7 @@ export async function getStaticProps(context) {
     {
       type: "Placeholder2French: all_placeholder_content_2",
       params: {
-        limit: 0,
+        limit: 5,
         locale: "fr",
       },
       query: "{ items { title system { uid locale } } }",
@@ -76,6 +110,7 @@ export async function getStaticProps(context) {
 
   const response = await queryData(queryArray);
 
+  // *************************************************************************************
   // Generate a list of placeholder UIDs
 
   // const uids = [];
@@ -96,6 +131,52 @@ export async function getStaticProps(context) {
   // });
 
   // console.log(uids);
+
+  // *************************************************************************************
+  // Generate Algolia Index
+
+  // const collectionQuery = `
+  // {
+  //   items {
+  //     system {
+  //       content_type_uid
+  //     }
+  //     title
+  //     value_1
+  //     value_2
+  //     value_3
+  //   }
+  // }
+  // `;
+
+  // const collectionConfig = [
+  //   {
+  //     type: "all_placeholder_content",
+  //     params: {
+  //       limit: 0,
+  //       locale: "en-us",
+  //     },
+  //     query: collectionQuery,
+  //   },
+  // ];
+
+  // const collection = await queryData(collectionConfig);
+
+  // console.log(collection);
+
+  // const arraySlice = collection.all_placeholder_content.items.slice(-100);
+
+  // const fs = require("fs");
+
+  // fs.writeFile(
+  //   "algolia-index.json",
+  //   JSON.stringify(arraySlice, null, 2),
+  //   (err) => {
+  //     if (err) console.log(err);
+  //   }
+  // );
+
+  // console.log(arraySlice);
 
   return {
     props: {
